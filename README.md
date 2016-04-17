@@ -8,9 +8,12 @@ The idea is based on building a timeline from an existing database, so we will b
 
 ### Data set or other source materials
 Racket libraries:
-db
-web-server/templates
-xml
+
+`db`
+
+`web-server/templates`
+
+`xml`
 
 ### Deliverable and Demonstration
 A timeline builder that will allow users to create and edit timelines in real time.
