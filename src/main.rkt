@@ -1,7 +1,9 @@
-#lang web-server/insta
+#lang racket
 
-(require web-server/templates)
-(require xml)
+(require web-server/templates
+         web-server/servlet
+         web-server/servlet-env
+         xml)
 
 ;; Timeline
 ;; Jacob Suarez (@Onamar), Tyrone Turrel(@tturrell), Saurabh Verma (@sv-uml)
@@ -10,7 +12,9 @@
 
 (define (fast-template thing)
  (include-template "home.htm"))
-
-(define (start request)
+ 
+(define (timeline-thing req)
   (response/xexpr
    (string->xexpr (fast-template "Timeline Thing"))))
+
+(serve/servlet timeline-thing)
