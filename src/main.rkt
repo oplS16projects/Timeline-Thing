@@ -32,14 +32,16 @@
 
 (define (fast-template
          title
-         short-title)
+         short_title
+         curr_version)
  (include-template "home.htm"))
  
 (define (timeline-thing req)
   (response/xexpr
    (string->xexpr (fast-template
                    "Timeline Thing"
-                   "Timeline"))))
+                   "Timeline"
+                   (string->number(real->decimal-string CURR_VERSION 3))))))
 
 (serve/servlet timeline-thing
                #:extra-files-paths
