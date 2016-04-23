@@ -15,8 +15,12 @@
  
 ; initialize-timeline! : path? -> timeline?
 ; Sets up a timeline database (if it doesn't exist)
+
+;; Possibly replace sqlite3 with a mysql connection?
+;; (define (initialize-timeline! user home password)
 (define (initialize-timeline! home)
   (define db (sqlite3-connect #:database home #:mode 'create))
+;;(define db (mysql-connect #:user user #:database home #:password password)
   (define the-timeline (timeline db))
   (unless (table-exists? db "posts")
     (query-exec db
