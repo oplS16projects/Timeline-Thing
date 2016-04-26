@@ -17,19 +17,19 @@
 ; Sets up a timeline database (if it doesn't exist)
 
 ;; Possibly replace sqlite3 with a mysql connection?
-;; (define (initialize-timeline! user home password)
-(define (initialize-timeline! home)
-  (define db (sqlite3-connect #:database home #:mode 'create))
-;;(define db (mysql-connect #:user user #:database home #:password password)
-  (define the-timeline (timeline db))
-  (unless (table-exists? db "posts")
-    (query-exec db
-     (string-append
-      "CREATE TABLE posts "
-      "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
-    (timeline-insert-post!
-     the-timeline "First Post" "This is a test of the database."))
-  the-timeline)
+ (define (initialize-timeline! user home password)
+;;(define (initialize-timeline! home)
+;;(define db (sqlite3-connect #:database home #:mode 'create))
+   (define db (mysql-connect #:user user #:database home #:password password))
+   (define the-timeline (timeline db))
+   (unless (table-exists? db "posts")
+     (query-exec db
+                 (string-append
+                  "CREATE TABLE posts "
+                  "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
+     (timeline-insert-post!
+      the-timeline "First Post" "This is a test of the database."))
+   the-timeline)
  
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for the post ids
@@ -64,7 +64,7 @@
    (timeline-db a-timeline)
    "INSERT INTO posts (title, body) VALUES (?, ?)"
    title body))
- 
+
 (provide timeline? timeline-posts
          post? post-title post-body
          initialize-timeline!
