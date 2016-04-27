@@ -1,4 +1,5 @@
 # Project Title: Timeline Thing
+http://opls16projects.github.io/Timeline-Thing/
 
 ### Statement
 A Timeline builder to help plan large scale projects
@@ -27,16 +28,17 @@ We will know it will be successful if it works.
 ## Schedule
 
 ### First Milestone (Fri Apr 15)
-Basic webpage and database structure
+Basic webpage and database structure.
 
 ### Second Milestone (Fri Apr 22)
+Continued work on the front-end of the webpage.
 
 ### Final Presentation (last week of semester)
 
 ## Group Responsibilities
 
 ### Jacob Suarez @Onamar
-Jake is the team lead. Additionally, Jake will work on the database.
+Jake is the team lead. Additionally, Jake will work on the database and back-end.
 
 ### Tyrone Turrel @tturrell
 Will work on...
