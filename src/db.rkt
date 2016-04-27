@@ -65,6 +65,13 @@
    "INSERT INTO posts (title, body) VALUES (?, ?)"
    title body))
 
+; deleting a database entry
+; n is the id of the post to be deleted
+(define (delete-entry! a-timeline n)
+  (query-exec
+   (timeline-db a-timeline)
+   "DELETE FROM posts WGHERE id = n"))
+
 (provide timeline? timeline-posts
          post? post-title post-body
          initialize-timeline!
