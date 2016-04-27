@@ -42,7 +42,7 @@
 ; A post is a (post timeline id)
 ; where timeline is a timeline and id is an integer?
 (struct post (timeline id))
- 
+
 ; initialize-timeline! : path? -> timeline?
 ; Sets up a timeline database (if it doesn't exist)
 (define (initialize-timeline! home)
@@ -52,7 +52,11 @@
     (query-exec db
                 (string-append
                  "CREATE TABLE posts "
-                 "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
+                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT)"))
+    (query-exec db
+                (string-append
+                 "CREATE TABLE timelines "
+                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)"))
     (timeline-insert-post!
      the-timeline "First Post" "This is the initial post of the database.")) ;; Initial post so db is not void
   the-timeline)
