@@ -48,17 +48,19 @@
 (define (initialize-timeline! home)
   (define db (sqlite3-connect #:database home #:mode 'create))
   (define the-timeline (timeline db))
+  (unless (table-exists? db "timelines")
+    (query-exec db
+                (string-append
+                 "CREATE TABLE timelines "
+                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)")))
+  (define initial-timeline (timeline-insert-timeline! the-timeline 0 "Timeline1")) ;; Initial post so db is not void
+
   (unless (table-exists? db "posts")
     (query-exec db
                 (string-append
                  "CREATE TABLE posts "
-                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT)"))
-    (query-exec db
-                (string-append
-                 "CREATE TABLE timelines "
-                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)"))
-    (timeline-insert-post!
-     the-timeline "First Post" "This is the initial post of the database.")) ;; Initial post so db is not void
+                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
+      (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
   the-timeline)
 
 ; timeline-posts : timeline -> (listof post?)
@@ -89,11 +91,21 @@
  
 ; timeline-insert-post!: timeline? string? string? -> void
 ; Consumes a timeline and a post, adds the post at the top of the timeline.
-(define (timeline-insert-post! a-timeline title body)
+; Requires a timeline id (int), post body (string) and time (int)
+(define (timeline-insert-post! a-timeline timeline-id body time)
   (query-exec
    (timeline-db a-timeline)
-   "INSERT INTO posts (title, body) VALUES (?, ?)"
-   title body))
+   "INSERT INTO posts (timeline_id, description, time_created) VALUES (?, ?, ?)"
+   timeline-id body time))
+
+(define (timeline-insert-timeline! a-timeline author name)
+  (define time_created 1461796513)
+  (if (query-exec
+   (timeline-db a-timeline)
+   "INSERT INTO timelines (author, name, time_created) VALUES (?, ?, ?)"
+   author name time_created)
+      (query-value (timeline-db a-timeline)
+                   "SELECT last_insert_rowid() FROM timelines") -1))
 
 ; deleting a database entry
 ; n is the id of the post to be deleted
