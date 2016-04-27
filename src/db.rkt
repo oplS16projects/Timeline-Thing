@@ -4,26 +4,33 @@
 
 ;; ----INSTRUCTIONS----
 ;;
-;; Initializing a timeline object
-;; (define <timeline name> (initialize-timeline! <username> <path to .db file> <password>))
+;; Initializing an empty timeline object
+;; (define example-timeline (initialize-timeline! "path/to/filename"))
+;; The path to filename in for our purposes should just be "timeline.db" by default.
+;; You'll need to create a timeline.db file in the same folder as this file for the
+;; Database to initialize into
 ;;
 ;; After that everything should be self explanatory, fromt he comments above each function
 ;; but I'll do a more detailed explanation of their usage
 ;;
-;; (timeline-posts <timeline name>)
-;; Returns a list of post ids
+;; (timeline-posts timeline-name)
+;; Returns a list of post IDs
+;; To use a specific ID with post-title, post-body, and delete-entry!, use cdr and cdr.
+;; Example:
+;; (car (timeline-posts timeline)) would return the id of the first post in timeline
+;; (post-title (car (timeline-posts timeline))) would return the title of that post as a string
 ;;
-;; (post-title <post-id>)
+;; (post-title post-id)
 ;; Returns the title of the post with the specified ID
 ;;
-;; (post-body <post-id>)
+;; (post-body post-id)
 ;; Returns the body of the post with the specified ID
 ;;
-;; (timeline-insert-post! <timeline name> "Title" "Body of post")
+;; (timeline-insert-post! timeline-name "Title" "Body of post")
 ;; Adds the post at the top of the timeline
 ;;
-;; (delete-entry! <timeline name> <post-id>)
-;; Deletes the post with the specified ID
+;; (delete-entry! timeline-name post-id)
+;; Deletes the post with the specified ID in the specified timeline
 
 (require racket/list
          db)
@@ -38,8 +45,8 @@
  
 ; initialize-timeline! : path? -> timeline?
 ; Sets up a timeline database (if it doesn't exist)
-(define (initialize-timeline! user home password)
-  (define db (mysql-connect #:user user #:database home #:password password))
+(define (initialize-timeline! home)
+  (define db (sqlite3-connect #:database home #:mode 'create))
   (define the-timeline (timeline db))
   (unless (table-exists? db "posts")
     (query-exec db
@@ -47,11 +54,11 @@
                  "CREATE TABLE posts "
                  "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
     (timeline-insert-post!
-     the-timeline "First Post" "This is a test of the database."))
+     the-timeline "First Post" "This is the initial post of the database.")) ;; Initial post so db is not void
   the-timeline)
 
 ; timeline-posts : timeline -> (listof post?)
-; Queries for the post ids
+; Queries for a list of post ids
 (define (timeline-posts a-timeline)
   (define (id->post an-id)
     (post a-timeline an-id))
@@ -89,7 +96,7 @@
 (define (delete-entry! a-timeline n)
   (query-exec
    (timeline-db a-timeline)
-   "DELETE FROM posts WHERE id = n"))
+   "DELETE FROM posts (title, body) WHERE id = n"))
 
 (provide timeline? timeline-posts
          post? post-title post-body
