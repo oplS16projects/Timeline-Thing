@@ -2,6 +2,29 @@
 
 ;; Basic database structure
 
+;; ----INSTRUCTIONS----
+;;
+;; Initializing a timeline object
+;; (define <timeline name> (initialize-timeline! <username> <path to .db file> <password>))
+;;
+;; After that everything should be self explanatory, fromt he comments above each function
+;; but I'll do a more detailed explanation of their usage
+;;
+;; (timeline-posts <timeline name>)
+;; Returns a list of post ids
+;;
+;; (post-title <post-id>)
+;; Returns the title of the post with the specified ID
+;;
+;; (post-body <post-id>)
+;; Returns the body of the post with the specified ID
+;;
+;; (timeline-insert-post! <timeline name> "Title" "Body of post")
+;; Adds the post at the top of the timeline
+;;
+;; (delete-entry! <timeline name> <post-id>)
+;; Deletes the post with the specified ID
+
 (require racket/list
          db)
  
@@ -15,18 +38,18 @@
  
 ; initialize-timeline! : path? -> timeline?
 ; Sets up a timeline database (if it doesn't exist)
-(define (initialize-timeline! home)
-  (define db (sqlite3-connect #:database home #:mode 'create))
+(define (initialize-timeline! user home password)
+  (define db (mysql-connect #:user user #:database home #:password password))
   (define the-timeline (timeline db))
   (unless (table-exists? db "posts")
     (query-exec db
-     (string-append
-      "CREATE TABLE posts "
-      "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
+                (string-append
+                 "CREATE TABLE posts "
+                 "(id INTEGER PRIMARY KEY, title TEXT, body TEXT)"))
     (timeline-insert-post!
      the-timeline "First Post" "This is a test of the database."))
   the-timeline)
- 
+
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for the post ids
 (define (timeline-posts a-timeline)
@@ -60,7 +83,14 @@
    (timeline-db a-timeline)
    "INSERT INTO posts (title, body) VALUES (?, ?)"
    title body))
- 
+
+; deleting a database entry
+; n is the id of the post to be deleted
+(define (delete-entry! a-timeline n)
+  (query-exec
+   (timeline-db a-timeline)
+   "DELETE FROM posts WHERE id = n"))
+
 (provide timeline? timeline-posts
          post? post-title post-body
          initialize-timeline!
