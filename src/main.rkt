@@ -2,8 +2,10 @@
 ;; https://github.com/oplS16projects/Timeline-Thing
 #lang racket
 
-(require racket/file
+(require "db.rkt"
+         racket/include
          racket/runtime-path
+         racket/date
          web-server/templates
          web-server/servlet
          web-server/servlet-env
@@ -47,5 +49,9 @@
                #:extra-files-paths
                (list
                 (build-path CURR_DIR)))
+
+(define TimelineThing (initialize-timeline! "timeline.db"))
+; (timeline-insert-post! TimelineThing "Test_Title" "Wow cool")
+; (timeline-posts TimelineThing)
 
 (serve/servlet timeline-thing)
