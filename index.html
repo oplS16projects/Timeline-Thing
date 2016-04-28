@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Timeline : The official home of Timeline on GitHub">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Timeline</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/oplS16projects/Timeline-Thing">View on GitHub</a>
+
+          <h1 id="project_title">Timeline</h1>
+          <h2 id="project_tagline">The official home of Timeline on GitHub</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/oplS16projects/Timeline-Thing/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/oplS16projects/Timeline-Thing/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="fp7-webpage-timeline" class="anchor" href="#fp7-webpage-timeline" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>FP7-webpage Timeline</h1>
+
+<h2>
+<a id="authors" class="anchor" href="#authors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors</h2>
+
+<p>Jacob Suarez <a href="https://github.com/Onamar" class="user-mention">@Onamar</a></p>
+
+<p>Saurabh Verma <a href="https://github.com/sv-uml" class="user-mention">@sv-uml</a></p>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>A timeline builder using a SQL Database to create and edit timelines</p>
+
+<h2>
+<a id="screenshot" class="anchor" href="#screenshot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Screenshot</h2>
+
+<p><img src="https://github.com/oplS16projects/Timeline-Thing/blob/master/screenshot.PNG?raw=true" alt="screenshot of login page"></p>
+
+<h2>
+<a id="concepts-demonstrated" class="anchor" href="#concepts-demonstrated" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Concepts Demonstrated</h2>
+
+<ul>
+<li>
+<strong>Data Abstraction</strong> is used in the use of the database.</li>
+<li>
+<strong>Modularity</strong> through the database tools as well as setting local variables.</li>
+</ul>
+
+<h2>
+<a id="external-technology-and-libraries" class="anchor" href="#external-technology-and-libraries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>External Technology and Libraries</h2>
+
+<p>Libraries used for the main webpage:</p>
+
+<p><code>racket/include</code></p>
+
+<p><code>racket/runtime-path</code></p>
+
+<p><code>racket/date</code></p>
+
+<p><code>web-server/templates</code></p>
+
+<p><code>web-server/servlet</code></p>
+
+<p><code>web-server/servlet-env</code></p>
+
+<p><code>web-server/http</code></p>
+
+<p><code>parser-tools/lex</code></p>
+
+<p><code>xml</code></p>
+
+<p>Libraries used for the database:</p>
+
+<p><code>racket/list</code></p>
+
+<p><code>db</code></p>
+
+<h2>
+<a id="favorite-scheme-expressions" class="anchor" href="#favorite-scheme-expressions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Favorite Scheme Expressions</h2>
+
+<h4>
+<a id="jacob-suarez-onamar" class="anchor" href="#jacob-suarez-onamar" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jacob Suarez <a href="https://github.com/Onamar" class="user-mention">@Onamar</a>
+</h4>
+
+<p>This expression deletes an entry from the timeline. I like this expression because in writing it I learned a lot about databases and how to retrieve the id of posts within the database.</p>
+
+<div class="highlight highlight-source-scheme"><pre>(<span class="pl-k">define</span> (<span class="pl-en">delete-entry!</span><span class="pl-smi"> a-timeline n</span>)
+  (query-exec
+   (timeline-db a-timeline)
+   <span class="pl-s"><span class="pl-pds">"</span>DELETE FROM posts (title, body) WHERE id = n<span class="pl-pds">"</span></span>))</pre></div>
+
+<h4>
+<a id="saurabh-verma-sv-uml" class="anchor" href="#saurabh-verma-sv-uml" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Saurabh Verma <a href="https://github.com/sv-uml" class="user-mention">@sv-uml</a>
+</h4>
+
+<p>I like this expression because it successfully converts the current version number from an external file, increments it by 0.01, then saves it back to the file. In a way, it's an almost perfect application version tracker that doesn't rely on a traditional database.</p>
+
+<div class="highlight highlight-source-scheme"><pre>(<span class="pl-k">begin</span>
+      (<span class="pl-k">set!</span> CURR_VERSION (<span class="pl-k">+</span> (<span class="pl-c1">string-&gt;number</span> (file-&gt;string FILE_VERSION_NAME)) <span class="pl-c1">0.01</span>))
+      (write-to-file FILE_VERSION_NAME CURR_VERSION))</pre></div>
+
+<h2>
+<a id="additional-remarks" class="anchor" href="#additional-remarks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Additional Remarks</h2>
+
+<p>Anything else you want to say in your report. Can rename or remove this section.</p>
+
+<h1>
+<a id="how-to-download-and-run" class="anchor" href="#how-to-download-and-run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Download and Run</h1>
+
+<h4>
+<a id="latest-releases" class="anchor" href="#latest-releases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Releases</h4>
+
+<p><a href="https://github.com/oplS16projects/Timeline-Thing/releases">https://github.com/oplS16projects/Timeline-Thing/releases</a></p>
+
+<p>Run main.rkt to open the initial webpage.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Timeline maintained by <a href="https://github.com/oplS16projects">oplS16projects</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
