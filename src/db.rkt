@@ -29,7 +29,8 @@
 ;; (timeline-insert-post! timeline-name "Title" "Body of post")
 ;; Adds the post at the top of the timeline
 ;;
-;; (delete-entry! timeline-name post-id)
+;; (timeline-delete-entry! timeline-name post-id)
+;; (post-delete-entry! timeline-name post-id)
 ;; Deletes the post with the specified ID in the specified timeline
 
 (require racket/list
@@ -125,10 +126,15 @@
 
 ; deleting a database entry
 ; n is the id of the post to be deleted
-(define (delete-entry! a-timeline n)
+(define (timeline-delete-entry! a-timeline n)
   (query-exec
    (timeline-db a-timeline)
-   "DELETE FROM posts (title, body) WHERE id = n"))
+   "DELETE FROM timelines (author, name, time_created) WHERE id = n"))
+
+(define (posts-delete-entry! a-timeline n)
+  (query-exec
+   (timeline-db a-timeline)
+   "DELETE FROM posts (timeline_id, description, time_created) WHERE id = n"))
 
 (provide timeline? timeline-posts
          post? post-title post-body
