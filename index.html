@@ -95,10 +95,12 @@
 <a id="jacob-suarez-onamar" class="anchor" href="#jacob-suarez-onamar" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jacob Suarez <a href="https://github.com/Onamar" class="user-mention">@Onamar</a>
 </h4>
 
-<p>Each team member should identify a favorite expression or procedure, written by them, and explain what it does. Why is it your favorite? What OPL philosophy does it embody?
-Remember code looks something like this:</p>
+<p>This expression deletes an entry from the timeline. I like this expression because in writing it I learned a lot about databases and how to retrieve the id of posts within the database.</p>
 
-<div class="highlight highlight-source-scheme"><pre>(<span class="pl-c1">map</span> (<span class="pl-k">lambda</span> (<span class="pl-v">x</span>) (foldr compose functions)) data)</pre></div>
+<div class="highlight highlight-source-scheme"><pre>(<span class="pl-k">define</span> (<span class="pl-en">delete-entry!</span><span class="pl-smi"> a-timeline n</span>)
+  (query-exec
+   (timeline-db a-timeline)
+   <span class="pl-s"><span class="pl-pds">"</span>DELETE FROM posts (title, body) WHERE id = n<span class="pl-pds">"</span></span>))</pre></div>
 
 <h4>
 <a id="saurabh-verma-sv-uml" class="anchor" href="#saurabh-verma-sv-uml" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Saurabh Verma <a href="https://github.com/sv-uml" class="user-mention">@sv-uml</a>
@@ -125,6 +127,8 @@ Remember code looks something like this:</p>
 <a id="latest-releases" class="anchor" href="#latest-releases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Releases</h2>
 
 <p><a href="https://github.com/oplS16projects/Timeline-Thing/releases">https://github.com/oplS16projects/Timeline-Thing/releases</a></p>
+
+<p>Run main.rkt to open the initial webpage.</p>
       </section>
     </div>
 
