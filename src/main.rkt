@@ -2,17 +2,22 @@
 ;; https://github.com/oplS16projects/Timeline-Thing
 #lang racket
 
-(require racket/file
+(require "db.rkt"
+         racket/include
          racket/runtime-path
+         racket/date
          web-server/templates
          web-server/servlet
          web-server/servlet-env
+         web-server/http
+         parser-tools/lex
          xml)
 
 ;; Runtime declarations
 (define-runtime-path CURR_DIR ".")
 (define CURR_VERSION 0.01)
 (define FILE_VERSION_NAME "VERSION")
+(define root (path->string (current-directory)))
 
 (define (write-to-file path version_number)
   (call-with-output-file path
@@ -47,5 +52,9 @@
                #:extra-files-paths
                (list
                 (build-path CURR_DIR)))
+
+;(define TimelineThing (initialize-timeline! "timeline.db"))
+; (timeline-insert-post! TimelineThing "Test_Title" "Wow cool")
+; (timeline-posts TimelineThing)
 
 (serve/servlet timeline-thing)
