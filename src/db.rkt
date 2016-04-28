@@ -90,12 +90,60 @@
         (timeline-db a-timeline)
         "SELECT id FROM posts")))
  
-; post-title : post -> string?
-; Queries for the title
-(define (post-title a-post)
+; Database accessors
+; Takes a database entry and returns the specified information from that
+(define (timeline-author a-post)
   (query-value
    (timeline-db (post-timeline a-post))
-   "SELECT title FROM posts WHERE id = ?"
+   "SELECT author FROM timelines WHERE id = ?"
+   (post-id a-post)))
+
+(define (timeline-name a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT author FROM timelines WHERE id = ?"
+   (post-id a-post)))
+
+(define (timeline-time-created a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT time_created FROM timelines WHERE id = ?"
+   (post-id a-post)))
+
+(define (post-timeline-id a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT timeline_id FROM posts WHERE id = ?"
+   (post-id a-post)))
+
+(define (post-description a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT description FROM posts WHERE id = ?"
+   (post-id a-post)))
+
+(define (post-time-created a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT time_created FROM posts WHERE id = ?"
+   (post-id a-post)))
+
+(define (user-email a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT email FROM users WHERE id = ?"
+   (post-id a-post)))
+
+(define (user-password a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT email FROM posts WHERE id = ?"
+   (post-id a-post)))
+
+(define (user-time-created a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT time_created FROM users WHERE id = ?"
    (post-id a-post)))
  
 ; post-body : post -> string?
@@ -137,6 +185,6 @@
    "DELETE FROM posts (timeline_id, description, time_created) WHERE id = n"))
 
 (provide timeline? timeline-posts
-         post? post-title post-body
+         post? post-timeline-id post-description post-time-created
          initialize-timeline!
          timeline-insert-post!)
