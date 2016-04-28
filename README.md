@@ -10,11 +10,27 @@ The idea is based on building a timeline from an existing database, so we will b
 ### Data set or other source materials
 Racket libraries:
 
-`db`
+'racket/include'
 
-`web-server/templates`
+'racket/runtime-path'
+  
+'racket/date'
 
-`xml`
+'web-server/templates'
+
+'web-server/servlet'
+
+'web-server/servlet-env'
+
+'web-server/http'
+
+'parser-tools/lex'
+
+'xml'
+
+'racket/list'
+
+'db'
 
 ### Deliverable and Demonstration
 A timeline builder that will allow users to create and edit timelines in real time.
@@ -34,11 +50,12 @@ Basic webpage and database structure.
 Continued work on the front-end of the webpage.
 
 ### Final Presentation (last week of semester)
+Functional timeline builder that allows the user to create and edit timelines.
 
 ## Group Responsibilities
 
 ### Jacob Suarez @Onamar
-Jake is the team lead. Additionally, Jake will work on the database and back-end.
+Jake is the team lead. Additionally, Jake will work on the database and backend.
 
 ### Tyrone Turrel @tturrell
 Will work on...
