@@ -35,24 +35,6 @@
     ;; Else create file and set the value to whatever is current
     (write-to-file FILE_VERSION_NAME CURR_VERSION))
 
-; Path to password file:
-(define password-file (string-append root "/passwd.txt"))
-
-; returns true if any element of list matches pred
-(define (any? pred list)
-  (cond ((null? list) #f)
-        ((equal? pred (car list)) #t)
-        (else (any? pred (cdr list)))))
-                 
-; Password check
-; Checks if given username and password match any in the databse
-(define (credentials-valid? passwd-file username password)
-  (define lines (file->lines passwd-file)) ; Reads password file as a list of lines
-  (define (password-matches? line)
-    (and (any? username line)) ; Checks usernames
-         (any? password line)) ; Checks passwords
-(password-matches? lines))
-
 (define (fast-template
          title
          short_title

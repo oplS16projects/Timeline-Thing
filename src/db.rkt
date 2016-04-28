@@ -33,6 +33,7 @@
 ;; Deletes the post with the specified ID in the specified timeline
 
 (require racket/list
+         racket/date
          db)
  
 ; A timeline is a (timeline db)
@@ -61,7 +62,22 @@
                  "CREATE TABLE posts "
                  "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
       (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
+
+  (unless (table-exists? db "users")
+    (query-exec db
+                (string-append
+                 "CREATE TABLE users "
+                 "(id INTEGER PRIMARY KEY, email STRING, password STRING, time_created INTEGER)"))
+      (users-insert-user! the-timeline "admin@opl.com" "admin"))
   the-timeline)
+
+(define (users-insert-user! a-timeline email password)
+  (define time_created (current-seconds))
+  (query-exec
+   (timeline-db a-timeline)
+   "INSERT INTO users (email, password, time_created) VALUES (?, ?, ?)"
+   email password time_created))
+
 
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for a list of post ids
