@@ -20,18 +20,16 @@
 ;; (car (timeline-posts timeline)) would return the id of the first post in timeline
 ;; (post-title (car (timeline-posts timeline))) would return the title of that post as a string
 ;;
-;; (post-title post-id)
-;; Returns the title of the post with the specified ID
-;;
-;; (post-body post-id)
-;; Returns the body of the post with the specified ID
+;; Database accessors
+;; (timeline-author a-post) etc
+;; Takes a post id and returns the specified information
 ;;
 ;; (timeline-insert-post! timeline-name "Title" "Body of post")
 ;; Adds the post at the top of the timeline
 ;;
 ;; (timeline-delete-entry! timeline-name post-id)
 ;; (post-delete-entry! timeline-name post-id)
-;; Deletes the post with the specified ID in the specified timeline
+;; Deletes the object with the specified ID in the specified timeline
 
 (require racket/list
          racket/date
