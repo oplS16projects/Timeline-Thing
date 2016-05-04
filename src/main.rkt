@@ -79,7 +79,7 @@
 
 (define (phase-2 request)
   (define (response-generator embed/url)
-    (response/xepr
+    (response/xexpr
           `(html (head (title "Timeline Thing")
              (link ((rel "stylesheet")
                     (href "https://fonts.googleapis.com/css?family=Open+Sans")
