@@ -129,7 +129,7 @@
 
 ; posts-list : timeline-id -> '(list of posts)
 ; Queries for a list of ids of posts in a specific timeline
-(define (posts-list a-timeline timeline-id)
+(define (posts-by-timeline a-timeline timeline-id)
   (define (id->post an-id)
     (post a-timeline an-id))
   (map id->post (query-list
