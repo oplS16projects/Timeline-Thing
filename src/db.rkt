@@ -82,6 +82,7 @@
     (app-insert-setting! the-timeline "version" 0.01))
   the-timeline)
 
+;; USERS
 (define (users-insert-user! a-timeline email password)
   (define time_created (current-seconds))
   (query-exec
@@ -89,6 +90,11 @@
    "INSERT INTO users (email, password, time_created) VALUES (?, ?, ?)"
    email password time_created))
 
+(define (users-authenticate-user! a-timeline email password)
+  (if (> (query-value (timeline-db a-timeline)
+                                   "SELECT COUNT(id) FROM users WHERE email = ? AND password = ?" email password)
+         0)
+      1 -1))
 
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for a list of post ids
@@ -214,4 +220,5 @@
          post? post-timeline-id post-description post-time-created
          initialize-timeline!
          timeline-insert-post!
-         app-insert-setting! app-retrieve-setting! app-update-setting!)
+         app-insert-setting! app-retrieve-setting! app-update-setting!
+         users-insert-user! users-authenticate-user!)
