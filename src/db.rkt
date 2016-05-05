@@ -46,6 +46,7 @@
 ; A post is a (post timeline id)
 ; where timeline is a timeline and id is an integer?
 (struct post (timeline id))
+(struct timelines (timeline id))
 
 ; initialize-timeline! : path? -> timeline?
 ; Sets up a timeline database (if it doesn't exist)
@@ -105,6 +106,16 @@
        (query-list
         (timeline-db a-timeline)
         "SELECT id FROM posts")))
+
+; timeline-list : timeline -> (listof timeline?)
+; Queries for a list of timeline ids
+(define (timeline-list a-timeline)
+  (define (id->timelines an-id)
+    (timelines a-timeline an-id))
+  (map id->timelines
+       (query-list
+        (timeline-db a-timeline)
+        "SELECT id FROM timelines")))
  
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
