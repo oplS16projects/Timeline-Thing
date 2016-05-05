@@ -50,8 +50,7 @@
                   (h2 ((class "auth-title")) "Welcome back!")
                   (span ((class "auth-subtitle")) "Sign in to access your timelines")
                   (form ([action ,(embed/url upload-handler)]
-                         [method "POST"]
-                         [enctype "multipart/form-data"])
+                         [method "POST"])
                          (input ([type "text"] [name "email"] [placeholder "Email"]))
                          (input ([type "password"] [name "pass"] [placeholder "Password"]))
                          (input ([type "submit"] [value "Sign In"])))
@@ -61,7 +60,8 @@
   (define (upload-handler request)
     (define bindings (request-bindings request))
     (display (extract-binding/single 'email bindings))
-    (display (extract-binding/single 'pass bindings)))
+    (display (extract-binding/single 'pass bindings))
+    (signup-page (redirect/get)))
   (send/suspend/dispatch response-generator))
 
 (define (signup-page request)
