@@ -21,8 +21,12 @@
 ;; (post-title (car (timeline-posts timeline))) would return the title of that post as a string
 ;;
 ;; Database accessors
-;; (timeline-author a-post) etc
+;; (timeline-author a-timeline) etc
 ;; Takes a post id and returns the specified information
+;;
+;; (timeline-sort a-timeline order)
+;; Sorts a given timeline
+;; To sort by ascending or decending, the second argument should be "up" or "down"
 ;;
 ;; (timeline-insert-post! timeline-name "Title" "Body of post")
 ;; Adds the post at the top of the timeline
@@ -90,23 +94,23 @@
  
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
-(define (timeline-author a-post)
+(define (timeline-author a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT author FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
-(define (timeline-name a-post)
+(define (timeline-name a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT author FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
-(define (timeline-time-created a-post)
+(define (timeline-time-created a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT time_created FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
 (define (post-timeline-id a-post)
   (query-value
@@ -126,31 +130,34 @@
    "SELECT time_created FROM posts WHERE id = ?"
    (post-id a-post)))
 
-(define (user-email a-post)
+(define (user-email a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT email FROM users WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-user)))
 
-(define (user-password a-post)
+(define (user-password a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT email FROM posts WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-user)))
 
-(define (user-time-created a-post)
+(define (user-time-created a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT time_created FROM users WHERE id = ?"
-   (post-id a-post)))
- 
-; post-body : post -> string?
-; Queries for the body
-(define (post-body p)
-  (query-value
-   (timeline-db (post-timeline p))
-   "SELECT body FROM posts WHERE id = ?"
-   (post-id p)))
+   (post-id a-user)))
+
+; timeline-sort
+; Sorts a given timeline
+; To sort by ascending or decending, the second argument should be "up" or "down"
+(define (timeline-sort a-timeline order)
+  (cond ((eqv? order "up") (query-exec
+                            (timeline-db a-timeline)
+                            "SELECT * FROM posts ORDER BY time_created ASC"))
+        ((eqv? order "down") (query-exec
+                            (timeline-db a-timeline)
+                            "SELECT * FROM posts ORDER BY time_created DESC"))))
  
 ; timeline-insert-post!: timeline? string? string? -> void
 ; Consumes a timeline and a post, adds the post at the top of the timeline.
