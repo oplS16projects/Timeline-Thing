@@ -21,11 +21,24 @@
 ;; (post-title (car (timeline-posts timeline))) would return the title of that post as a string
 ;;
 ;; Database accessors
-;; (timeline-author a-post) etc
+;; (timeline-author a-timeline)
+;; (timeline-name a-timeline)
+;; (timeline-timeline-id a-timeline)
+;; (post-timeline-id a-post)
+;; (post-date a-post)
+;; (post-description a-post)
+;; (post-time-created a-post)
+;; (user-email a-user)
+;; (user-password a-user)
+;; (user-time-created a-user)
 ;; Takes a post id and returns the specified information
 ;;
-;; (timeline-insert-post! timeline-name "Title" "Body of post")
+;; (timeline-sort a-timeline)
+;; Sorts all posts in a timeline by date in ascending order
+;;
+;; (timeline-insert-post! timeline-name "Date" "Title")
 ;; Adds the post at the top of the timeline
+;; Date should be in "Year/Month/Day" format for sorting purposes
 ;;
 ;; (timeline-delete-entry! timeline-name post-id)
 ;; (post-delete-entry! timeline-name post-id)
@@ -52,15 +65,15 @@
     (query-exec db
                 (string-append
                  "CREATE TABLE timelines "
-                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)")))
-  (define initial-timeline (timeline-insert-timeline! the-timeline 0 "Timeline1")) ;; Initial post so db is not void
+                 "(id INTEGER PRIMARY KEY, author TEXT, name TEXT, time_created INTEGER)")))
+  (define initial-timeline (timeline-insert-timeline! the-timeline "0" "Timeline1")) ;; Initial post so db is not void
 
   (unless (table-exists? db "posts")
     (query-exec db
                 (string-append
                  "CREATE TABLE posts "
-                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
-      (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
+                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, date TEXT, description TEXT, time_created INTEGER)"))
+      (timeline-insert-post! the-timeline initial-timeline "16/01/01" "Body of first post of first timeline"))
 
   (unless (table-exists? db "users")
     (query-exec db
@@ -90,28 +103,34 @@
  
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
-(define (timeline-author a-post)
+(define (timeline-author a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT author FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
-(define (timeline-name a-post)
+(define (timeline-name a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT author FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
-(define (timeline-time-created a-post)
+(define (timeline-time-created a-timeline)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-timeline))
    "SELECT time_created FROM timelines WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-timeline)))
 
 (define (post-timeline-id a-post)
   (query-value
    (timeline-db (post-timeline a-post))
    "SELECT timeline_id FROM posts WHERE id = ?"
+   (post-id a-post)))
+
+(define (post-date a-post)
+  (query-value
+   (timeline-db (post-timeline a-post))
+   "SELECT date FROM posts WHERE id = ?"
    (post-id a-post)))
 
 (define (post-description a-post)
@@ -126,49 +145,47 @@
    "SELECT time_created FROM posts WHERE id = ?"
    (post-id a-post)))
 
-(define (user-email a-post)
+(define (user-email a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT email FROM users WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-user)))
 
-(define (user-password a-post)
+(define (user-password a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT email FROM posts WHERE id = ?"
-   (post-id a-post)))
+   (post-id a-user)))
 
-(define (user-time-created a-post)
+(define (user-time-created a-user)
   (query-value
-   (timeline-db (post-timeline a-post))
+   (timeline-db (post-timeline a-user))
    "SELECT time_created FROM users WHERE id = ?"
-   (post-id a-post)))
- 
-; post-body : post -> string?
-; Queries for the body
-(define (post-body p)
-  (query-value
-   (timeline-db (post-timeline p))
-   "SELECT body FROM posts WHERE id = ?"
-   (post-id p)))
+   (post-id a-user)))
+
+; timeline-sort
+; sorts a timeline by date
+(define (timeline-sort a-timeline)
+  (query-exec
+   (timeline-db a-timeline)
+   "SELECT * FROM posts ORDER BY date ASC"))
  
 ; timeline-insert-post!: timeline? string? string? -> void
 ; Consumes a timeline and a post, adds the post at the top of the timeline.
-; Requires a timeline id (int), post body (string) and time (int)
-(define (timeline-insert-post! a-timeline timeline-id body time)
+; Requires a timeline id (int), description (string) and time (int)
+(define (timeline-insert-post! a-timeline timeline-id date body)
+  (define time_created (current-seconds))
   (query-exec
    (timeline-db a-timeline)
-   "INSERT INTO posts (timeline_id, description, time_created) VALUES (?, ?, ?)"
-   timeline-id body time))
+   "INSERT INTO posts (timeline_id, date, description, time_created) VALUES (?, ?, ?, ?)"
+   timeline-id date body time_created))
 
 (define (timeline-insert-timeline! a-timeline author name)
-  (define time_created 1461796513)
-  (if (query-exec
+  (define time_created (current-seconds))
+  (query-exec
    (timeline-db a-timeline)
    "INSERT INTO timelines (author, name, time_created) VALUES (?, ?, ?)"
-   author name time_created)
-      (query-value (timeline-db a-timeline)
-                   "SELECT last_insert_rowid() FROM timelines") -1))
+   author name time_created))
 
 ; deleting a database entry
 ; n is the id of the post to be deleted
