@@ -107,7 +107,7 @@
         (timeline-db a-timeline)
         "SELECT id FROM posts")))
 
-; timeline-list : timeline -> (listof timeline?)
+; timeline-list : timeline -> '(list of timelines)
 ; Queries for a list of timeline ids
 (define (timeline-list a-timeline)
   (define (id->timelines an-id)
@@ -116,7 +116,15 @@
        (query-list
         (timeline-db a-timeline)
         "SELECT id FROM timelines")))
- 
+
+; timelines-by-author : timeline -> '(list of ids)
+; Queries for a list of ids of timelines from a specific author
+(define (timelines-by-author a-timeline author)
+  (query-list
+   (timeline-db a-timeline)
+   "SELECT id FROM timelines WHERE author = ?"
+   author))
+           
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
 (define (timeline-author a-timeline)
