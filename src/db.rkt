@@ -36,7 +36,7 @@
 ;; (timeline-sort a-timeline)
 ;; Sorts all posts in a timeline by date in ascending order
 ;;
-;; (timeline-insert-post! timeline-name "Date" "Title")
+;; (timeline-insert-post! timeline-name timeline-id "Date" "Title")
 ;; Adds the post at the top of the timeline
 ;; Date should be in "Year/Month/Day" format for sorting purposes
 ;;
