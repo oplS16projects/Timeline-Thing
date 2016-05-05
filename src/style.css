@@ -85,3 +85,75 @@ footer {
 	padding: 10px;
 	text-align: center;
 }
+
+nav.header {
+	display: block;
+    height: 63px;
+    margin-bottom: 50px;
+    background: #626C80;
+    border-bottom: 1px solid #ccc;
+    padding-left: 200px;
+}
+
+nav.header.single {
+	padding: 0;
+	width: 100%;
+}
+
+nav.header > h1.title {
+	margin: 0;
+    padding: 0;
+    font-size: 32px;
+    display: table-cell;
+    width: 100%;
+}
+
+nav.header.single > h1.title {
+	display: block;
+}
+
+nav.header .dropdown {
+	color: #fff;
+	cursor: hand;
+    position: relative;
+    display: table-cell;
+    min-width: 200px;
+    line-height: 63px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+nav.header .dropdown-menu {
+	bottom: -36px;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+nav.header .dropdown-menu .dropdown-menu-content {
+	margin: 0;
+	padding: 0;
+}
+
+nav.header .dropdown-menu .dropdown-menu-content li {
+	color: #000;
+    list-style-type: none;
+    white-space: nowrap;
+    line-height: normal;
+    padding: 7px 10px;
+}
+
+nav.header .dropdown-menu .dropdown-menu-content li:hover {
+	background-color: #ccc;
+}
+
+nav.header .dropdown:focus {
+	outline: none;
+}
+
+nav.header .dropdown:focus .dropdown-menu {
+    display: block;
+}

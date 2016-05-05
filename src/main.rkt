@@ -47,7 +47,8 @@
                       (link ((rel "stylesheet")
                              (href "/style.css")
                              (type "text/css"))))
-                (body (h1 ((class "title")) "Timeline Thing")
+                (body (nav ((class "header single"))
+                           (h1 ((class "title")) "Timeline Thing"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "Welcome back!")
                            (span ((class "auth-subtitle")) "Sign in to access your timelines")
@@ -71,7 +72,8 @@
                       (link ((rel "stylesheet")
                              (href "/style.css")
                              (type "text/css"))))
-                (body (h1 ((class "title")) "Timeline Thing")
+                (body (nav ((class "header single"))
+                           (h1 ((class "title")) "Timeline Thing"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "You're logged in!")))
                 (footer (span "© 2016 Build ")
@@ -102,7 +104,8 @@
                       (link ((rel "stylesheet")
                              (href "/style.css")
                              (type "text/css"))))
-                (body (h1 ((class "title")) "Timeline Thing")
+                (body (nav ((class "header single"))
+                           (h1 ((class "title")) "Timeline Thing"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "Welcome")
                            (span ((class "auth-subtitle")) "Sign up to create timelines")
@@ -126,8 +129,34 @@
         (signup-page (redirect/get))))
   (send/suspend/dispatch response-generator))
 
+
+(define (logged-in-page request)
+  (define (response-generator request)
+    (response/xexpr ;; LOGGED IN
+         `(html (head (title "Timeline Thing")
+                      (link ((rel "stylesheet")
+                             (href "https://fonts.googleapis.com/css?family=Open+Sans")
+                             (type "text/css")))
+                      (link ((rel "stylesheet")
+                             (href "https://fonts.googleapis.com/css?family=Pacifico")
+                             (type "text/css")))
+                      (link ((rel "stylesheet")
+                             (href "/style.css")
+                             (type "text/css"))))
+                (body (nav ((class "header"))
+                           (h1 ((class "title")) "Timeline Thing")
+                           (div ([class "dropdown"] [tabindex "0"])
+                                (div ([class "dropdown-menu"])
+                                     (ul ([class "dropdown-menu-content"])
+                                         (li (a "Sign Out")))) "test@test.com"))
+                      (div ((class "content-container"))
+                           (h2 ((class "auth-title")) "You're logged in!")))
+                (footer (span "© 2016 Build ")
+                        (span ,(number->string (string->number(real->decimal-string CURR_VERSION 3))))))))
+  (send/suspend/dispatch response-generator))
+
 ;; Start the engine
-(serve/servlet home-page
+(serve/servlet logged-in-page
                #:extra-files-paths
                (list
                 (build-path CURR_DIR)))
