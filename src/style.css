@@ -72,7 +72,7 @@ span.signup {
 	text-align: center;
 }
 
-span.signup > a.signup-bold {
+span.signup > a {
 	color: rgba(143, 154, 175, 1);
 	font-weight: bold;
 	text-decoration: none;

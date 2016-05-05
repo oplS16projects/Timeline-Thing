@@ -52,26 +52,34 @@
 (define (initialize-timeline! home)
   (define db (sqlite3-connect #:database home #:mode 'create))
   (define the-timeline (timeline db))
+  (define initial-timeline -2)
   (unless (table-exists? db "timelines")
     (query-exec db
                 (string-append
                  "CREATE TABLE timelines "
-                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)")))
-  (define initial-timeline (timeline-insert-timeline! the-timeline 0 "Timeline1")) ;; Initial post so db is not void
+                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)"))
+    (set! initial-timeline (- (timeline-insert-timeline! the-timeline 0 "Timeline1" (current-seconds)) 1))) ;; Initial post so db is not void)
 
   (unless (table-exists? db "posts")
     (query-exec db
                 (string-append
                  "CREATE TABLE posts "
                  "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
-      (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
+    (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
 
   (unless (table-exists? db "users")
     (query-exec db
                 (string-append
                  "CREATE TABLE users "
                  "(id INTEGER PRIMARY KEY, email STRING, password STRING, time_created INTEGER)"))
-      (users-insert-user! the-timeline "admin@opl.com" "admin"))
+    (users-insert-user! the-timeline "admin@opl.com" "admin"))
+
+  (unless (table-exists? db "app_settings")
+    (query-exec db
+                (string-append
+                 "CREATE TABLE app_settings "
+                 "(id INTEGER PRIMARY KEY, key STRING, value STRING)"))
+    (app-insert-setting! the-timeline "version" 0.01))
   the-timeline)
 
 (define (users-insert-user! a-timeline email password)
@@ -168,28 +176,42 @@
    "INSERT INTO posts (timeline_id, description, time_created) VALUES (?, ?, ?)"
    timeline-id body time))
 
-(define (timeline-insert-timeline! a-timeline author name)
-  (define time_created 1461796513)
+(define (timeline-insert-timeline! a-timeline author name time)
   (if (query-exec
    (timeline-db a-timeline)
    "INSERT INTO timelines (author, name, time_created) VALUES (?, ?, ?)"
-   author name time_created)
+   author name time)
       (query-value (timeline-db a-timeline)
-                   "SELECT last_insert_rowid() FROM timelines") -1))
+                   "SELECT COUNT(id) FROM timelines") -1))
 
 ; deleting a database entry
 ; n is the id of the post to be deleted
 (define (timeline-delete-entry! a-timeline n)
   (query-exec
    (timeline-db a-timeline)
-   "DELETE FROM timelines (author, name, time_created) WHERE id = n"))
+   "DELETE FROM timelines (author, name, time_created) WHERE id = ?" n))
 
 (define (posts-delete-entry! a-timeline n)
   (query-exec
    (timeline-db a-timeline)
-   "DELETE FROM posts (timeline_id, description, time_created) WHERE id = n"))
+   "DELETE FROM posts (timeline_id, description, time_created) WHERE id = ?" n))
+
+;; Application-related functions
+(define (app-insert-setting! a-timeline key value)
+  (if (query-exec (timeline-db a-timeline)
+   "INSERT INTO app_settings (key, value) VALUES (?, ?)" key value) 1 -1))
+
+(define (app-retrieve-setting! a-timeline key)
+  (query-value (timeline-db a-timeline)
+                   "SELECT value FROM app_settings WHERE key = ?" key))
+  
+(define (app-update-setting! a-timeline key value)
+  (if (query-exec
+   (timeline-db a-timeline)
+   "UPDATE app_settings SET value = ? WHERE key = ?" value key) 1 -1))
 
 (provide timeline? timeline-posts
          post? post-timeline-id post-description post-time-created
          initialize-timeline!
-         timeline-insert-post!)
+         timeline-insert-post!
+         app-insert-setting! app-retrieve-setting! app-update-setting!)
