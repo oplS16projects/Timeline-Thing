@@ -20,11 +20,19 @@
     (query-exec db
      (string-append
       "CREATE TABLE timeline "
-      "(id INTEGER PRIMARY KEY, date INTEGER, author TEXT, event TEXT, content TEXT)"))
+      "(id INTEGER PRIMARY KEY, date TEXT, author TEXT, event TEXT, content TEXT)"))
     (timeline-insert-post!
      the-timeline "19540403" "James" "Birthday" "Yeah!")
     (timeline-insert-post!
-     the-timeline "19770125" "Tyrone" "Birthday" "YEAH!"))
+     the-timeline "19770125" "Tyrone" "Birthday" "YEAH!")
+  (timeline-insert-post!
+     the-timeline "19750509" "Heather" "Birthday" "YEAH!")
+(timeline-insert-post!
+     the-timeline "20160812" "Jeff" "Birthday" "YEAH!")
+(timeline-insert-post!
+     the-timeline "19880322" "Diane" "Birthday" "YEAH!")
+(timeline-insert-post!
+     the-timeline "20161012" "Clair" "Birthday" "YEAH!"))
   (unless (table-exists? db "comments")
     (query-exec db
      "CREATE TABLE comments (pid INTEGER, content TEXT)")
@@ -32,7 +40,10 @@
      the-timeline (first (timeline-posts the-timeline))
      "First comment!"))
   the-timeline)
+
+
  
+
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for the post ids
 (define (timeline-posts a-timeline)
@@ -42,10 +53,7 @@
        (query-list
         (timeline-db a-timeline)
         "SELECT id FROM timeline")))
-;post-row
-(define (post-row a-timeline post-id)
-  (query-row (timeline-db a-timeline )
-             "SELECT * FROM timeline WHERE id = 1"))
+
              
    
 ; post-author : post -> string?
@@ -72,8 +80,12 @@
    (timeline-db (post-timeline p))
    "SELECT event FROM timeline WHERE id = ?"
    (post-id p)))
-
-
+;; post-row
+ (define (post-row p)
+          (query-row
+           (timeline-db (post-timeline p))
+           "SELECT * FROM timeline WHERE id = ?"
+           (post-id p)))
 
 ; post-content : post -> string?
 ; Queries for the content
@@ -95,12 +107,12 @@
 
 ; timeline-insert-post!: timeline? string? string? -> void
 ; Consumes a timeline and a post, adds the post at the top of the timeline.
-(define (timeline-insert-post! a-timeline author date event content)
+(define (timeline-insert-post! a-timeline date author event content)
   (query-exec
    (timeline-db a-timeline)
-   "INSERT INTO timeline (author, date, event, content) VALUES (?, ?, ?, ?)"
-   author date event content))
- 
+   "INSERT INTO timeline (date, author, event, content) VALUES (?, ?, ?, ?)"
+   date author event content))
+
 ; post-insert-comment!: timeline? post string -> void
 ; Consumes a timeline, a post and a comment string.  As a side-efect, 
 ; adds the comment to the bottom of the post's list of comments.
@@ -109,8 +121,9 @@
    (timeline-db a-timeline)
    "INSERT INTO comments (pid, content) VALUES (?, ?)"
    (post-id p) a-comment))
- 
-(provide timeline? timeline-posts timeline post-id post-row
-         post? post-author post-date post-comments
-         initialize-timeline! post-event post-content
+
+
+(provide timeline? timeline-posts timeline post-id post-row post?
+         post? post-author post-date post-comments timeline-db
+         initialize-timeline! post-event post-content post post-timeline
          timeline-insert-post! post-insert-comment!)
