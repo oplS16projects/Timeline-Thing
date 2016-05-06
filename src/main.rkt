@@ -131,7 +131,7 @@
 
 
 (define (logged-in-page request)
-  (define (response-generator request)
+  (define (response-generator embed/url)
     (response/xexpr ;; LOGGED IN
          `(html (head (title "Timeline Thing")
                       (link ((rel "stylesheet")
@@ -148,12 +148,17 @@
                            (div ([class "dropdown"] [tabindex "0"])
                                 (div ([class "dropdown-menu"])
                                      (ul ([class "dropdown-menu-content"])
-                                         (li (a "Sign Out")))) "test@test.com"))
+                                         (li (a ((href ,(embed/url sign-out))) "Sign Out")))) "test@test.com"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "You're logged in!")))
                 (footer (span "© 2016 Build ")
                         (span ,(number->string (string->number(real->decimal-string CURR_VERSION 3))))))))
   (send/suspend/dispatch response-generator))
+
+(define (sign-out request)
+  (begin
+    (set! logged-in 0)
+    (home-page (redirect/get))))
 
 ;; Start the engine
 (serve/servlet logged-in-page
