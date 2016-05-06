@@ -30,7 +30,6 @@
        (set! CURR_VERSION (+ retrieved_setting_version 0.01)))
       (else (set! CURR_VERSION 0.00)))
 (app-update-setting! TimelineThing "version" CURR_VERSION)
-(display CURR_VERSION)
 
 ;; Home-page scene
 (define (home-page request)
@@ -72,8 +71,10 @@
                       (link ((rel "stylesheet")
                              (href "/style.css")
                              (type "text/css"))))
-                (body (nav ((class "header single"))
-                           (h1 ((class "title")) "Timeline Thing"))
+                (body ((class "loggedin"))
+                      (nav ((class "header"))
+                           (h1 ((class "title")) "Timeline Thing")
+                           (a ([href ,(embed/url sign-out)]) "Sign Out"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "You're logged in!")))
                 (footer (span "© 2016 Build ")
@@ -85,10 +86,13 @@
     (define password (extract-binding/single 'pass bindings))
 
     (if (= (users-authenticate-user! TimelineThing email password) 1)
-        (begin
-          (set! logged-in 1)
-          (signup-page (redirect/get)))
-        (home-page (redirect/get))))
+        (set! logged-in 1) #f)
+    (home-page (redirect/get)))
+  (define (sign-out request)
+    (begin
+      (display (timelines-by-author TimelineThing 0))
+      (set! logged-in 0))
+    (signup-page (redirect/get)))
   (send/suspend/dispatch response-generator))
 
 (define (signup-page request)
@@ -129,7 +133,6 @@
         (signup-page (redirect/get))))
   (send/suspend/dispatch response-generator))
 
-
 (define (logged-in-page request)
   (define (response-generator embed/url)
     (response/xexpr ;; LOGGED IN
@@ -143,25 +146,23 @@
                       (link ((rel "stylesheet")
                              (href "/style.css")
                              (type "text/css"))))
-                (body (nav ((class "header"))
+                (body ((class "loggedin"))
+                      (nav ((class "header"))
                            (h1 ((class "title")) "Timeline Thing")
-                           (div ([class "dropdown"] [tabindex "0"])
-                                (div ([class "dropdown-menu"])
-                                     (ul ([class "dropdown-menu-content"])
-                                         (li (a ((href ,(embed/url sign-out))) "Sign Out")))) "test@test.com"))
+                           (a ([href ,(embed/url sign-out)]) "Sign Out"))
                       (div ((class "content-container"))
                            (h2 ((class "auth-title")) "You're logged in!")))
                 (footer (span "© 2016 Build ")
                         (span ,(number->string (string->number(real->decimal-string CURR_VERSION 3))))))))
+  (define (sign-out request)
+    (begin
+      (display (timelines-by-author TimelineThing 0))
+      (set! logged-in 0))
+    (signup-page (redirect/get)))
   (send/suspend/dispatch response-generator))
 
-(define (sign-out request)
-  (begin
-    (set! logged-in 0)
-    (home-page (redirect/get))))
-
 ;; Start the engine
-(serve/servlet logged-in-page
+(serve/servlet home-page
                #:extra-files-paths
                (list
                 (build-path CURR_DIR)))

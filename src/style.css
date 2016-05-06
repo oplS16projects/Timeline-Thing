@@ -3,6 +3,7 @@
 html, body { margin: 0; padding: 0; }
 
 body { background-color: #8F9AAF; }
+body.loggedin { background-color: #ddd; }
 
 h1.title {
 	color: #fff;
@@ -112,7 +113,7 @@ nav.header.single > h1.title {
 	display: block;
 }
 
-nav.header .dropdown {
+nav.header a {
 	color: #fff;
 	cursor: hand;
     position: relative;
@@ -121,39 +122,4 @@ nav.header .dropdown {
     line-height: 63px;
     text-align: center;
     vertical-align: middle;
-}
-
-nav.header .dropdown-menu {
-	bottom: -36px;
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-nav.header .dropdown-menu .dropdown-menu-content {
-	margin: 0;
-	padding: 0;
-}
-
-nav.header .dropdown-menu .dropdown-menu-content li {
-	color: #000;
-    list-style-type: none;
-    white-space: nowrap;
-    line-height: normal;
-    padding: 7px 10px;
-}
-
-nav.header .dropdown-menu .dropdown-menu-content li:hover {
-	background-color: #ccc;
-}
-
-nav.header .dropdown:focus {
-	outline: none;
-}
-
-nav.header .dropdown:focus .dropdown-menu {
-    display: block;
 }

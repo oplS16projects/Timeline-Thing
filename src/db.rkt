@@ -252,4 +252,5 @@
          initialize-timeline!
          timeline-insert-post!
          app-insert-setting! app-retrieve-setting! app-update-setting!
-         users-insert-user! users-authenticate-user!)
+         users-insert-user! users-authenticate-user!
+         timelines-by-author posts-by-timeline)
