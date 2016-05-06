@@ -58,21 +58,21 @@
     (query-exec db
                 (string-append
                  "CREATE TABLE timelines "
-                 "(id INTEGER PRIMARY KEY, author INTEGER, name TEXT, time_created INTEGER)"))
-    (set! initial-timeline (- (timeline-insert-timeline! the-timeline 0 "Timeline1" (current-seconds)) 1))) ;; Initial post so db is not void)
+                 "(id INTEGER PRIMARY KEY UNIQUE, author INTEGER, name TEXT, time_created INTEGER)"))
+    (set! initial-timeline (- (timeline-insert-timeline! the-timeline 1 "Timeline1" (current-seconds)) 1))) ;; Initial post so db is not void)
 
   (unless (table-exists? db "posts")
     (query-exec db
                 (string-append
                  "CREATE TABLE posts "
-                 "(id INTEGER PRIMARY KEY, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
-    (timeline-insert-post! the-timeline initial-timeline "Body of first post of first timeline" (current-seconds)))
+                 "(id INTEGER PRIMARY KEY UNIQUE, timeline_id INTEGER, description TEXT, time_created INTEGER)"))
+    (timeline-insert-post! the-timeline 1 "Body of first post of first timeline" (current-seconds)))
 
   (unless (table-exists? db "users")
     (query-exec db
                 (string-append
                  "CREATE TABLE users "
-                 "(id INTEGER PRIMARY KEY, email STRING, password STRING, time_created INTEGER)"))
+                 "(id INTEGER PRIMARY KEY UNIQUE, email STRING UNIQUE, password STRING, time_created INTEGER)"))
     (users-insert-user! the-timeline "admin@opl.com" "admin"))
 
   (unless (table-exists? db "app_settings")
@@ -97,6 +97,10 @@
          0)
       1 -1))
 
+(define (users-get-id! a-timeline email password)
+  (query-value (timeline-db a-timeline)
+                                   "SELECT id FROM users WHERE email = ? AND password = ?" email password))
+
 ; timeline-posts : timeline -> (listof post?)
 ; Queries for a list of post ids
 (define (timeline-posts a-timeline)
@@ -117,21 +121,25 @@
         (timeline-db a-timeline)
         "SELECT id FROM timelines")))
 
-; timelines-by-author : timeline -> '(list of ids)
+; timelines-by-author : timeline -> '(list of timelines)
 ; Queries for a list of ids of timelines from a specific author
 (define (timelines-by-author a-timeline author)
-  (query-list
-   (timeline-db a-timeline)
-   "SELECT id FROM timelines WHERE author = ?"
-   author))
+    (define (id->timelines an-id)
+      (timelines a-timeline an-id))
+  (map id->timelines (query-list
+                      (timeline-db a-timeline)
+                      "SELECT id FROM timelines WHERE author = ?"
+                      author)))
 
-; posts-by-timeline : timeline-id -> '(list of ids)
+; posts-list : timeline-id -> '(list of posts)
 ; Queries for a list of ids of posts in a specific timeline
 (define (posts-by-timeline a-timeline timeline-id)
-  (query-list
-   (timeline-db a-timeline)
-   "SELECT id FROM posts WHERE timeline_id = ?"
-   timeline-id))
+  (define (id->post an-id)
+    (post a-timeline an-id))
+  (map id->post (query-list
+        (timeline-db a-timeline)
+        "SELECT id FROM posts WHERE timeline_id = ?"
+        timeline-id)))
            
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
@@ -248,5 +256,5 @@
          initialize-timeline!
          timeline-insert-post!
          app-insert-setting! app-retrieve-setting! app-update-setting!
-         users-insert-user! users-authenticate-user!
+         users-insert-user! users-authenticate-user! users-get-id!
          timelines-by-author posts-by-timeline)

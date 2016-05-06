@@ -20,6 +20,7 @@
 (define-runtime-path CURR_DIR ".")
 (define root (path->string (current-directory)))
 (define logged-in 0)
+(define curr_user_id -1)
 
 (define TimelineThing (initialize-timeline! "timeline.db"))
 (define CURR_VERSION 0)
@@ -75,18 +76,27 @@
                       (nav ((class "header"))
                            (h1 ((class "title")) "Timeline Thing")
                            (a ([href ,(embed/url sign-out)]) "Sign Out"))
-                      (div ((class "content-container"))
-                           (h2 ((class "auth-title")) "You're logged in!")))
+                      (div ((class "container"))
+                           (h2 ((class "auth-title")) "Timelines")))
                 (footer (span "© 2016 Build ")
                         (span ,(number->string (string->number(real->decimal-string CURR_VERSION 3)))))))))
-    
+
+  (define (render-timelines)
+    (define timelines (timelines-by-author TimelineThing curr_user_id))
+    (display timelines)
+    `(span
+      (for ([i timelines])
+        (display i->id))))
+
   (define (upload-handler request)
     (define bindings (request-bindings request))
     (define email (extract-binding/single 'email bindings))
     (define password (extract-binding/single 'pass bindings))
+    (display email)
+    (display password)
 
     (if (= (users-authenticate-user! TimelineThing email password) 1)
-        (set! logged-in 1) #f)
+        (begin (set! logged-in 1) (set! curr_user_id (users-get-id! TimelineThing email password))) #f)
     (home-page (redirect/get)))
   (define (sign-out request)
     (begin
@@ -155,9 +165,7 @@
                 (footer (span "© 2016 Build ")
                         (span ,(number->string (string->number(real->decimal-string CURR_VERSION 3))))))))
   (define (sign-out request)
-    (begin
-      (display (timelines-by-author TimelineThing 0))
-      (set! logged-in 0))
+    (set! logged-in 0)
     (signup-page (redirect/get)))
   (send/suspend/dispatch response-generator))
 

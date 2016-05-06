@@ -5,6 +5,8 @@ html, body { margin: 0; padding: 0; }
 body { background-color: #8F9AAF; }
 body.loggedin { background-color: #ddd; }
 
+a { text-decoration: none; }
+
 h1.title {
 	color: #fff;
 	font-family: 'Pacifico', cursive;
@@ -65,6 +67,11 @@ span.auth-subtitle {
 .content-container > form input[type="text"]:focus {
 	box-shadow: 0 0 5px rgba(143, 154, 175, 1);
 	border: 1px solid rgba(143, 154, 175, 1);
+}
+
+.container {
+	background: transparent;
+	padding: 0 20px;
 }
 
 span.signup {
