@@ -66,11 +66,17 @@
 
 <p>Libraries used for the main webpage:</p>
 
-<p><code>racket/include</code></p>
+<p>racket/include`</p>
+
+<p><code>racket/format</code></p>
+
+<p><code>racket-include</code></p>
 
 <p><code>racket/runtime-path</code></p>
 
 <p><code>racket/date</code></p>
+
+<p><code>web-server/formlets</code></p>
 
 <p><code>web-server/templates</code></p>
 
@@ -87,6 +93,8 @@
 <p>Libraries used for the database:</p>
 
 <p><code>racket/list</code></p>
+
+<p><code>racket/date</code></p>
 
 <p><code>db</code></p>
 
@@ -114,12 +122,6 @@
       (<span class="pl-k">set!</span> CURR_VERSION (<span class="pl-k">+</span> (<span class="pl-c1">string-&gt;number</span> (file-&gt;string FILE_VERSION_NAME)) <span class="pl-c1">0.01</span>))
       (write-to-file FILE_VERSION_NAME CURR_VERSION))</pre></div>
 
-<div class="highlight highlight-source-scheme"><pre><span class="pl-k">;; Get Ordered list of id #s</span>
-      (<span class="pl-k">define </span> s  (<span class="pl-k">query-list</span> (<span class="pl-k">timeline-db a-timeline)
-      "SELECT id FROM timeline ORDER BY date")
-	  
-	  ;;Turn list of id #s into list of posts
-	  (define v (map (lambda (x) (post a-timeline x )) s))</span></div>ty
 <h1>
 <a id="how-to-download-and-run" class="anchor" href="#how-to-download-and-run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Download and Run</h1>
 
@@ -128,7 +130,8 @@
 
 <p><a href="https://github.com/oplS16projects/Timeline-Thing/releases">https://github.com/oplS16projects/Timeline-Thing/releases</a></p>
 
-<p>Run main.rkt to open the initial webpage.</p>
+<p>Run main.rkt to open the initial webpage.
+Run ty-main.rkt to open the alternative webpage.</p>
       </section>
     </div>
 
