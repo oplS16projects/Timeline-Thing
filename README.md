@@ -12,9 +12,15 @@ Racket libraries:
 
 `racket/include`
 
+`racket/format`
+
+`racket-include`
+
 `racket/runtime-path`
   
 `racket/date`
+
+`web-server/formlets`
 
 `web-server/templates`
 
@@ -58,7 +64,7 @@ Functional timeline builder that allows the user to create and edit timelines.
 Jake is the team lead. Additionally, Jake will work on the database and backend.
 
 ### Tyrone Turrel @tturrell
-Will work on...
+Will work on user input and the front-end.
 
 ### Saurabh Verma @sv-uml
 Saurabh will be working on the front-end (HTML and CSS) as well as assisting the team in the development of the backend architecture.
