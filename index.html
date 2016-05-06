@@ -114,6 +114,12 @@
       (<span class="pl-k">set!</span> CURR_VERSION (<span class="pl-k">+</span> (<span class="pl-c1">string-&gt;number</span> (file-&gt;string FILE_VERSION_NAME)) <span class="pl-c1">0.01</span>))
       (write-to-file FILE_VERSION_NAME CURR_VERSION))</pre></div>
 
+<div class="highlight highlight-source-scheme"><pre><span class="pl-k">;; Get Ordered list of id #s</span>
+      (<span class="pl-k">define </span> s  (<span class="pl-k">query-list</span> (<span class="pl-k">timeline-db a-timeline)
+      "SELECT id FROM timeline ORDER BY date")
+	  
+	  ;;Turn list of id #s into list of posts
+	  (define v (map (lambda (x) (post a-timeline x )) s))</span></div>ty
 <h1>
 <a id="how-to-download-and-run" class="anchor" href="#how-to-download-and-run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Download and Run</h1>
 
