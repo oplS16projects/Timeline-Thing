@@ -15,15 +15,10 @@
 ;;
 ;; (timeline-posts timeline-name)
 ;; Returns a list of post IDs
-;;
-;; (timeline-list a-timeline)
-;; Returns a list of timeline IDs
-;;
-;; (timelines-by-author a-timeline author)
-;; Returns a list of timeline IDs of timelines from a specific author
-;;
-;; (define (posts-by-timeline a-timeline timeline-id)
-;; Returns a list of post IDs from a specific timeline
+;; To use a specific ID with post-title, post-body, and delete-entry!, use cdr and cdr.
+;; Example:
+;; (car (timeline-posts timeline)) would return the id of the first post in timeline
+;; (post-title (car (timeline-posts timeline))) would return the title of that post as a string
 ;;
 ;; Database accessors
 ;; (timeline-author a-timeline) etc
