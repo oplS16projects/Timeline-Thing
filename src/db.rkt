@@ -123,7 +123,7 @@
   (query-list
    (timeline-db a-timeline)
    "SELECT id FROM timelines WHERE author = ?"
-   author)))
+   author))
 
 ; posts-by-timeline : timeline-id -> '(list of ids)
 ; Queries for a list of ids of posts in a specific timeline
@@ -131,7 +131,7 @@
   (query-list
    (timeline-db a-timeline)
    "SELECT id FROM posts WHERE timeline_id = ?"
-   timeline-id)))
+   timeline-id))
            
 ; Database accessors
 ; Takes a database entry and returns the specified information from that
