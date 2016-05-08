@@ -1,6 +1,9 @@
 # Project Title: Timeline Thing
 http://opls16projects.github.io/Timeline-Thing/
 
+### Demo Instructions
+When you run the application from main.rkt, it should open up a page that says "Welcome Back! ... Sign in to access your timelines". The default email and password in the DB are "admin@opl.com" and "admin", respectively. Upon entering that and clicking the blue "Sign In" button, the page should automatically authenticate that email/pass combination on the backend and then redirect you to another page that reads "Timelines". On the top right hand corner, there is a Sign Out link, that unsets the logged in state and signs out the user. While our efforts demonstrated one side of the database interaction (authentication and API for talking with the DB). The ty-main.rkt & tyimodel.rkt files illustrated the other side, specifically the insertion of posts (which utilize a forked version of our APIs).
+
 ### Statement
 A Timeline builder to help plan large scale projects
 
